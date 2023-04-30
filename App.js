@@ -21,9 +21,8 @@ import {
   PanGestureHandler,
 } from 'react-native-gesture-handler';
 import * as d3Shapes from 'd3-shape';
-import color from 'randomcolor';
 import {snap} from '@popmotion/popcorn';
-import {Svg, G, Text, TSpan, Path, RNSVGText} from 'react-native-svg';
+import {Svg, G, Text, TSpan, Path} from 'react-native-svg';
 import {State} from 'react-native-gesture-handler';
 import {useState} from 'react';
 const {width} = Dimensions.get('screen');
@@ -35,20 +34,30 @@ const oneTurn = 360;
 const angleBySegment = oneTurn / numberSegment;
 const angleOffSet = angleBySegment / 2;
 
+const colors = [
+  '#de3529',
+  '#1668a6',
+  '#fcc21c',
+  '#de3529',
+  '#1668a6',
+  '#fcc21c',
+  '#de3529',
+  '#1668a6',
+  '#fcc21c',
+  '#1668a6',
+];
+
 const makeWheel = () => {
   const data = Array.from({length: numberSegment}).fill(1);
   const arcs = d3Shapes.pie()(data);
-  const colors = color({
-    luminosity: 'dark',
-    count: numberSegment,
-  });
 
   return arcs.map((arc, index) => {
     const instance = d3Shapes
       .arc()
       .padAngle(0.01)
       .outerRadius(width / 2)
-      .innerRadius(20);
+      .cornerRadius(8)
+      .innerRadius(10);
 
     return {
       path: instance(arc),
@@ -65,6 +74,7 @@ const App = () => {
   const [enabled, setEnabled] = useState(false);
   const [winner, setWinner] = useState(null);
   const [finished, setFinished] = useState(false);
+
   let angle = 0;
 
   useEffect(() => {
@@ -126,6 +136,8 @@ const App = () => {
           <Svg
             width={wheelSize}
             height={wheelSize}
+            stroke={'#aaadbb'}
+            strokeWidth="1"
             style={{transform: [{rotate: `-${angleOffSet}deg`}]}}
             viewBox={`0 0 ${width} ${width}`}>
             <G y={width / 2} x={width / 2}>
@@ -140,6 +152,7 @@ const App = () => {
                       origin={`${x}, ${y}`}>
                       <Text
                         x={x}
+                        stroke="none"
                         y={y - 70}
                         fill="white"
                         textAnchor="middle"
@@ -209,9 +222,10 @@ const App = () => {
   }
 
   function renderWinner() {
-    return (
-      <Txt style={{marginBottom: 50, fontSize: 24}}>Winner is : {winner}</Txt>
-    );
+    if (winner === 204 || winner === 202 || winner === 201) {
+      return <Txt style={styles.winner}>Congratulations You Won</Txt>;
+    }
+    return <Txt style={styles.winner}>Better Luck Next Time</Txt>;
   }
 
   function handleReset() {
@@ -241,21 +255,30 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#1e1e1e',
+    backgroundColor: 'white',
   },
   btnContainer: {
     width: '100%',
     display: 'flex',
-    backgroundColor: '#1e1e1e',
+    backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
   },
   btn: {
-    fontSize: 18,
-    marginBottom: 20,
-    backgroundColor: '#2c2c2c',
-    padding: 20,
+    fontSize: 24,
+    marginBottom: 60,
+    backgroundColor: '#0076b8',
+    paddingHorizontal: 40,
+    paddingVertical: 20,
+    color: 'white',
     borderRadius: 10,
+  },
+  winner: {
+    marginBottom: 60,
+    fontSize: 32,
+    fontWeight: '500',
+    fontFamily: 'Lyon-Italic',
+    color: 'black',
   },
 });
 
