@@ -243,7 +243,7 @@ const App = () => {
         </PanGestureHandler>
         <View style={styles.btnContainer}>
           <Txt style={styles.btn} onPress={handleReset}>
-            Reset Game
+            RESET
           </Txt>
         </View>
       </GestureHandlerRootView>
@@ -265,10 +265,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   btn: {
-    fontSize: 24,
+    fontSize: 18,
     marginBottom: 60,
+    letterSpacing: 4,
     backgroundColor: '#0076b8',
-    paddingHorizontal: 40,
+    paddingHorizontal: 60,
     paddingVertical: 20,
     color: 'white',
     borderRadius: 10,
