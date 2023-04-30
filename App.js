@@ -71,7 +71,7 @@ const makeWheel = () => {
 
 const App = () => {
   const wheelPath = makeWheel();
-  const _angle = new Animated.Value(0);
+  const [_angle] = useState(new Animated.Value(0));
   const [enabled, setEnabled] = useState(false);
   const [winner, setWinner] = useState(null);
   const [finished, setFinished] = useState(false);
@@ -85,13 +85,15 @@ const App = () => {
       }
       angle = event.value;
     });
-  }, []);
-
-  console.log(angle);
+  }, [enabled]);
 
   const getWinnerIndex = () => {
     const deg = Math.abs(Math.round(angle % oneTurn));
-    return Math.floor(deg / angleBySegment);
+    if (this.angle < 0) {
+      return deg / angleBySegment;
+    }
+    // wheel turning clockwise
+    return (numberSegment - Math.floor(deg / angleBySegment)) % numberSegment;
   };
 
   function onPan({nativeEvent}) {
@@ -159,7 +161,11 @@ const App = () => {
                         fontSize={fontSize}>
                         {Array.from({length: number.length}).map((_, i) => {
                           return (
-                            <TSpan x={x} dy={fontSize} key={`an${i}`}>
+                            <TSpan
+                              fill="white"
+                              x={x}
+                              dy={fontSize}
+                              key={`an${i}`}>
                               {number.charAt(i)}
                             </TSpan>
                           );
@@ -195,12 +201,12 @@ const App = () => {
           transform: [
             {
               rotate: knobItem.interpolate({
-                inputRange: [-1, -0.25, -0.0001, 0.0001, 0.25, 1],
+                inputRange: [-1, -0.25, -0.0009, 0.0009, 0.25, 1],
                 outputRange: [
+                  '01deg',
                   '0deg',
-                  '0deg',
-                  '25deg',
-                  '-25deg',
+                  '-15deg',
+                  '15deg',
                   '0deg',
                   '0deg',
                 ],
@@ -223,14 +229,7 @@ const App = () => {
 
   function renderWinner() {
     console.log(winner);
-    if (
-      winner == 204 ||
-      winner == 208 ||
-      winner == 202 ||
-      winner == 207 ||
-      winner == 201 ||
-      winner == 209
-    ) {
+    if (winner == 204 || winner == 208 || winner == 202 || winner == 207) {
       return (
         <>
           <Txt style={styles.winner}>Congratulations You Won</Txt>
@@ -244,6 +243,7 @@ const App = () => {
   }
 
   function handleReset() {
+    _angle.setValue(0);
     setEnabled(false);
   }
 
