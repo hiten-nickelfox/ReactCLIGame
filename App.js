@@ -25,6 +25,7 @@ import {snap} from '@popmotion/popcorn';
 import {Svg, G, Text, TSpan, Path} from 'react-native-svg';
 import {State} from 'react-native-gesture-handler';
 import {useState} from 'react';
+import ConfettiCannon from 'react-native-confetti-cannon';
 const {width} = Dimensions.get('screen');
 
 const numberSegment = 10;
@@ -76,7 +77,6 @@ const App = () => {
   const [finished, setFinished] = useState(false);
 
   let angle = 0;
-
   useEffect(() => {
     _angle.addListener(event => {
       if (enabled === true) {
@@ -85,7 +85,9 @@ const App = () => {
       }
       angle = event.value;
     });
-  }, [enabled]);
+  }, []);
+
+  console.log(angle);
 
   const getWinnerIndex = () => {
     const deg = Math.abs(Math.round(angle % oneTurn));
@@ -136,7 +138,6 @@ const App = () => {
           <Svg
             width={wheelSize}
             height={wheelSize}
-            stroke={'#aaadbb'}
             strokeWidth="1"
             style={{transform: [{rotate: `-${angleOffSet}deg`}]}}
             viewBox={`0 0 ${width} ${width}`}>
@@ -154,7 +155,6 @@ const App = () => {
                         x={x}
                         stroke="none"
                         y={y - 70}
-                        fill="white"
                         textAnchor="middle"
                         fontSize={fontSize}>
                         {Array.from({length: number.length}).map((_, i) => {
@@ -222,8 +222,23 @@ const App = () => {
   }
 
   function renderWinner() {
-    if (winner === 204 || winner === 202 || winner === 201) {
-      return <Txt style={styles.winner}>Congratulations You Won</Txt>;
+    console.log(winner);
+    if (
+      winner == 204 ||
+      winner == 208 ||
+      winner == 202 ||
+      winner == 207 ||
+      winner == 201 ||
+      winner == 209
+    ) {
+      return (
+        <>
+          <Txt style={styles.winner}>Congratulations You Won</Txt>
+          <ConfettiCannon
+            count={100}
+            origin={{x: 180, y: -20}}></ConfettiCannon>
+        </>
+      );
     }
     return <Txt style={styles.winner}>Better Luck Next Time</Txt>;
   }
@@ -239,13 +254,13 @@ const App = () => {
           <View style={styles.container}>
             {renderSvgWheel()}
             {enabled && renderWinner()}
+            <View style={styles.btnContainer}>
+              <Txt style={styles.btn} onPress={handleReset}>
+                RESET
+              </Txt>
+            </View>
           </View>
         </PanGestureHandler>
-        <View style={styles.btnContainer}>
-          <Txt style={styles.btn} onPress={handleReset}>
-            RESET
-          </Txt>
-        </View>
       </GestureHandlerRootView>
     </>
   );
@@ -255,12 +270,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: '#1e1e1e',
   },
   btnContainer: {
     width: '100%',
     display: 'flex',
-    backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -279,7 +293,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: '500',
     fontFamily: 'Lyon-Italic',
-    color: 'black',
+    color: 'white',
   },
 });
 

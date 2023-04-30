@@ -16,6 +16,7 @@
     "randomcolor": "^0.6.2",
     "react": "18.2.0",
     "react-native": "^0.71.7",
+    "react-native-confetti-cannon": "^1.5.2",
     "react-native-gesture-handler": "^2.9.0",
     "react-native-pie-chart": "^2.1.1",
     "react-native-reanimated": "^3.1.0",
